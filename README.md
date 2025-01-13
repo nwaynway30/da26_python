@@ -1,5 +1,4 @@
-# test
-No way
+# Music seasonality
 
 Requirements:
- keep key.json in root
+ keep service_account.json in root
