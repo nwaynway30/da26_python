@@ -20,6 +20,7 @@ client = Client(
     credentials=credentials
 )
 
+
 # 加载数据函数
 def load_data(table):
     query = f"SELECT * FROM `da26-python.music_data.{table}`"
@@ -43,19 +44,16 @@ chart_positions['track_id'] = chart_positions['track_id'].astype(str)
 chart_tracks = (artist_tracks.merge(chart_positions, on="track_id", how="inner")
                    .merge(tracks, on="track_id", how="inner"))
     
+#chart_tracks = chart_tracks.drop(columns=['chart_week_x', 'list_position_x'])    
+    
 chart_tracks = chart_tracks.rename(columns={
-    "name_x": "artist_name",
-    "name_y": "track_name",
-    "list_position": "chart_position",  # 重命名以避免混淆
-    "chart_week": "chart_date"  # 重命名以保持一致性
+        "name_x": "track_name",
+        "name_y": "artist_name"
 })
-print(chart_tracks.columns)
-
-# 添加年份列
 chart_tracks['year'] = pd.to_datetime(chart_tracks['chart_week_x']).dt.year
 
 # 页面内容开始
-st.title("🎵 Swanit Music Channel")
+st.title("🎵 Swanit Music Festival")
 
 # 创建年份选择器（放在页面顶部）
 col1, col2 = st.columns([2, 3])
@@ -67,12 +65,8 @@ with col1:
 yearly_data = chart_tracks[chart_tracks['year'] == selected_year]
 
 yearly_data.columns = yearly_data.columns.str.strip()
-
-print(yearly_data.columns)
 # 找到每年的排名第一的歌曲
-number_one_songs = yearly_data[yearly_data["list_position_x"] == 1]  # 修改这里使用正确的列名
-
-print(number_one_songs["artist_name"])
+number_one_songs = yearly_data[yearly_data["chart_list_position_x"] == 1]
 
 # 计算统计数据
 song_weeks = (number_one_songs.groupby("track_name")
@@ -109,7 +103,7 @@ with st.sidebar:
     st.header("Analysis Options")
     analysis_type = st.radio(
         "Choose an analysis type:",
-        ["Artists by #1 Weeks", "Songs by #1 Weeks", "Top Tracks"]
+        ["Songs by #1 Weeks", "Artists by #1 Weeks", "Top Tracks"]
     )
 
 # 显示主要内容
@@ -156,9 +150,8 @@ elif analysis_type == "Artists by #1 Weeks":
 else:  # Top Tracks
     st.subheader(f"📈 {selected_year} Chart Performance")
     # 显示当年所有曲目的表现
-    yearly_tracks = yearly_data[["artist_name", "track_name", "list_position_x", "chart_week_x"]]
-    yearly_tracks = yearly_tracks.sort_values(["chart_week_x", "list_position_x"])
-
-    print(yearly_tracks.columns)
-
+    yearly_tracks = yearly_data[["track_name", "artist_name", "list_position", "chart_week"]]
+    yearly_tracks = yearly_tracks.sort_values(["chart_week", "list_position"])
     st.dataframe(yearly_tracks, use_container_width=True)
+
+
