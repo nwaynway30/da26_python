@@ -33,6 +33,13 @@ artists = load_data("artists")
 tracks = load_data("tracks")
 tracks_artists_mapping = load_data("tracks_artists_mapping")
 
+print(chart_positions.columns)
+print(tracks_artists_mapping.columns)
+print(artists.columns)
+print(tracks.columns)
+print(audio_features.columns)
+
+
 # 合并数据
 tracks_with_artists = chart_positions.merge(tracks_artists_mapping, on="track_id", how="inner")
 artist_tracks = tracks_with_artists.merge(artists, on="artist_id", how="inner")
