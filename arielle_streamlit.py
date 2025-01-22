@@ -3,10 +3,6 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Load your dataset (assuming 'songs' is already available or loaded as a pandas DataFrame)
-# Example of how to load data:
-# songs = pd.read_csv('your_data.csv')
-
 # Streamlit title and description
 st.title("Trends in Danceability and Energy (2005 - Present)")
 st.write("This visualization shows the trends of average danceability and energy of tracks in the top 40, from 2005 to present.")
@@ -21,7 +17,6 @@ yearly_trends = (
     .reset_index()
 )
 
-# Plot the trends using Seaborn
 sns.set(style="whitegrid")
 
 # Create figure for Streamlit
